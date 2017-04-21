@@ -32,8 +32,7 @@ class eventmodel extends CI_Model {
         $sql = "select * from events 
                 where 12742 * asin(sqrt(0.5 - cos((lat - $lat) * 0.017453292519943295)/2 + cos($lat * 0.017453292519943295) * cos(lat * 0.017453292519943295) * (1 - cos((lon - $lon) * 0.017453292519943295))/2)) < 25
                 and title like '%$event_filter%'
-                order by start_date $event_order
-                limit 15";
+                order by start_date $event_order";
 
         $result = $this->db->query($sql)->result_array();
         return $result;                

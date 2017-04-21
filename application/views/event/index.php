@@ -13,6 +13,7 @@
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <link rel="Stylesheet" type="text/css" href="/assets/css/awesomplete.css"/>
+<link rel="stylesheet" type="text/css" href="/assets/pagination/pagination.css"/>
 <script src="/assets/js/awesomplete.js" async></script>
 <script
   src="https://code.jquery.com/jquery-1.12.4.min.js"
@@ -79,88 +80,37 @@
 <body>
 	<h2>Event Map</h2>
 	<div>
-		<form action="/event/search" method="post">
-			<input type="text" name="city_name" value="" class="awesomplete" list="city_list" />
-			<datalist id="city_list">
-				<?php foreach ($city_list as $item) { ?>
-					<option><?php echo $item['search'];?></option>
-				<?php } ?>
-			</datalist>
-			<input type="submit" value="Search">
-		</form>
+		<input type="text" name="city_name" value="" class="awesomplete" id="city_name"/>
+		<input type="button" value="Search" id="search_city">
 
 		<hr/>		
-		<?php if (isset($city_name)) { ?>
-		<h4>Search Result for <?php echo $city_name; ?></h4>
 		<div id="map_wrapper"></div>
+
+		<h4>Search Result for <span id="search_city_name"></span></h4>
 		<div>
 			<table>
 				<tr>
-					<form action="/event/search" method="post">
-						<td>
-							<button type="submit">
-								<img src="https://cdn2.iconfinder.com/data/icons/font-awesome/1792/sort-amount-asc-128.png" style="width: 30px;">
-							</button>
-						</td>
-						<td>
-								<input type="hidden" name="event_order" value="<?php echo $event_order; ?>"/>
-								<input type="hidden" name="city_name" value="<?php echo $city_name; ?>"/>
-								<input type="text" name="event_filter" value=""/>
-								<input type="submit" value="Filter">
-						</td>
-					</form>						
+					<td>
+						<button type="submit" id="filter_date">
+							<img src="https://cdn2.iconfinder.com/data/icons/font-awesome/1792/sort-amount-asc-128.png" style="width: 30px;">
+						</button>
+					</td>
+					<td>
+							<input type="hidden" id="param_event_order" value="asc"/>
+							<input type="hidden" id="param_city_name" value=""/>
+							<input type="text" id="param_event_filter" value=""/>
+							<input type="submit" value="Filter"  id="filter_event">
+					</td>
 				</tr>
-				<?php if(isset($event_list)){ ?>
-					<?php foreach ($event_list as $item) { ?>
-					<tr>
-						<td>
-							<img src="https://cdn1.iconfinder.com/data/icons/ui-navigation-1/152/marker-128.png" style="width: 50px;">
-						</td>
-						<td>
-							<span><?php echo $item['title']; ?></span><br/>
-							<span><?php echo $item['start_date']; ?> - <?php echo $item['end_date']; ?></span>
-						</td>
-					</tr>
-					<?php } ?>
-				<?php } ?>
 			</table>
 		</div>
-		<?php } ?>
+
+		<div class="test-content-wrapper"></div>
+		<div class="pagination-wrapper"></div>
+
 	</div>
-    <script>
-      var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map_wrapper'), {
-          center: {lat: <?php echo $location['lat'];?>, lng: <?php echo $location['lon'];?>},
-          zoom: 10
-        });
-
-        var infoWindow = new google.maps.InfoWindow;
-
-          // Change this depending on the name of your PHP or XML file
-        var xml = $.parseXML('<?php echo $event_list_xml;?>');
-        var markers = xml.documentElement.getElementsByTagName('marker');
-        Array.prototype.forEach.call(markers, function(markerElem) {        	
-          var point = new google.maps.LatLng(
-              parseFloat(markerElem.getAttribute('lat')),
-              parseFloat(markerElem.getAttribute('lon')));
-
-          var infowincontent = document.createElement('div');
-          var text = document.createElement('text');
-          text.textContent = markerElem.getAttribute('title')
-          infowincontent.appendChild(text);
-          var marker = new google.maps.Marker({
-            map: map,
-            position: point
-          });
-          marker.addListener('click', function() {
-            infoWindow.setContent(infowincontent);
-            infoWindow.open(map, marker);
-          });
-        });
-
-      }
-    </script>	
+	<script src="/assets/js/event_map.js"></script>
+	<script src="/assets/pagination/pagination.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwqiVx_277NiKSoKxEEz28R2ZAEid37qw&callback=initMap" async defer></script>	
 </body>
 </html>

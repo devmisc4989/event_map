@@ -12,7 +12,8 @@ class event extends CI_Controller {
     }
 
     function index(){
-    	$data['city_list'] = $this->eventmodel->getCities();
+        $data['location']['lat'] = -34.397;
+        $data['location']['lon'] = 150.644;
         $this->load->view('event/index', $data);
     }
 
@@ -26,7 +27,7 @@ class event extends CI_Controller {
         $data['event_filter'] = $event_filter;
         $data['event_order'] = ($event_order == 'asc') ? 'desc' : 'asc';
 
-        $data['city_list'] = $this->eventmodel->getCities();
+        // $data['city_list'] = $this->eventmodel->getCities();
         $data['event_list'] = array();
         if(count($selected_city) > 0){
             $lat = $selected_city[0]['lat'];
@@ -48,10 +49,17 @@ class event extends CI_Controller {
 
             $data['event_list_xml'] = $this->escapeJavaScriptText($data['event_list_xml']);
         }
-    	$this->load->view('event/index', $data);
+    	// $this->load->view('event/index', $data);
+        header("Content-Type: application/json");
+        echo json_encode($data);
     }
 
     function escapeJavaScriptText($string){
         return str_replace("'", "", $string);
+    }
+
+    function city_list(){
+        $city_list = $this->eventmodel->getCities();
+        echo json_encode($city_list);
     }
 }
